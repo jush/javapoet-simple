@@ -1,0 +1,3 @@
+rootProject.name = 'javapoet-simple'
+include 'sample'
+

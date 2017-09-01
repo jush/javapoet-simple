@@ -1,0 +1,35 @@
+group 'org.jush'
+version '0.1-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    javaPoet {
+        java.srcDir 'src/javaPoet/java'
+    }
+    main {
+        java.srcDir "${buildDir}/generated-sources/"
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    javaPoetCompile 'com.squareup:javapoet:1.9.0'
+    compile 'com.squareup:javapoet:1.9.0'
+}
+
+task generateHelloWorld(type: JavaExec) {
+    main = 'org.jush.HelloWorldGenerator'
+    classpath = sourceSets.javaPoet.runtimeClasspath
+    args "${buildDir}/generated-sources/"
+    jvmArgs += '-noverify'
+
+    outputs.upToDateWhen { !tasks.compileJavaPoetJava.didWork }
+}
+compileJava.dependsOn(generateHelloWorld)
